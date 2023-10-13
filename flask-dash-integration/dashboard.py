@@ -1,12 +1,11 @@
 # example of using keycloak authentication with flask and dash
 import dash
+import dash_bootstrap_components as dbc
 from flask_oidc import OpenIDConnect
 from keycloak import KeycloakOpenID
 
 from app import app
-
 from app.layout import app_layout
-
 
 
 # instantiate oidc auth for app
@@ -14,9 +13,9 @@ oidc = OpenIDConnect(app)
 
 # Configure keycloak client
 keycloak_openid = KeycloakOpenID(
-    server_url="http://keycloak.ms6mnj5ah.com",
+    server_url="http://keycloak.auth.com",
     client_id="flask-app",
-    realm_name="soci",
+    realm_name="myorg",
     client_secret_key="makT91mFxi7z9cLBZosDKTQ1fkM0aPPe",
 )
 
