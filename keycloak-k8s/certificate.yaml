@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: keycloak-cert-prod
+  namespace: keycloak
+spec:
+  secretName: keycloak-prod-secret
+  issuerRef:
+    name: cert-manager-cluster-issuer-prod
+    kind: ClusterIssuer
+  duration: 4320h # 180d
+  renewBefore: 720h # 30d
+  commonName: keycloak.ms6mnj5ah.com
+  dnsNames:
+  - keycloak.ms6mnj5ah.com

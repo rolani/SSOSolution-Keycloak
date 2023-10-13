@@ -1,0 +1,29 @@
+---
+# Source: keycloak/templates/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: keycloak
+  namespace: keycloak
+  labels:
+    app.kubernetes.io/name: keycloak
+    helm.sh/chart: keycloak-14.2.0
+    app.kubernetes.io/instance: keycloak
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: keycloak
+spec:
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s
+    - port: http
+      path: /realms/master/metrics
+      interval: 30s
+  namespaceSelector:
+    matchNames:
+      - "keycloak"
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: keycloak
+      app.kubernetes.io/instance: keycloak
+      app.kubernetes.io/component: metrics

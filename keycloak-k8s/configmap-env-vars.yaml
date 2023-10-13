@@ -1,0 +1,33 @@
+---
+# Source: keycloak/templates/configmap-env-vars.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-env-vars
+  namespace: "keycloak"
+  labels:
+    app.kubernetes.io/name: keycloak
+    helm.sh/chart: keycloak-14.2.0
+    app.kubernetes.io/instance: keycloak
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: keycloak
+data:
+  KEYCLOAK_ADMIN: "admin"
+  KEYCLOAK_HTTP_PORT: "8080"
+  KEYCLOAK_PROXY: "passthrough"
+  KEYCLOAK_ENABLE_STATISTICS: "true"
+  #KEYCLOAK_DATABASE_HOST: "keycloak-postgresql"
+  #KEYCLOAK_DATABASE_HOST: "postgres-auth-database-backup.crzzluebxp1w.us-east-2.rds.amazonaws.com"
+  KEYCLOAK_DATABASE_HOST: "postgres-auth-database.ck6nockpempu.us-east-1.rds.amazonaws.com"
+  KEYCLOAK_DATABASE_PORT: "5432"
+  KEYCLOAK_DATABASE_NAME: "keycloak"
+  KEYCLOAK_DATABASE_USER: "keycloak"
+  KEYCLOAK_PRODUCTION:  "true"
+  KEYCLOAK_ENABLE_HTTPS: "true"
+  KEYCLOAK_HTTPS_PORT: "8443"
+  KEYCLOAK_HTTPS_USE_PEM: "true"
+  KEYCLOAK_HTTPS_CERTIFICATE_FILE: "/opt/bitnami/keycloak/certs/tls.crt"
+  KEYCLOAK_HTTPS_CERTIFICATE_KEY_FILE: "/opt/bitnami/keycloak/certs/tls.key"
+  KEYCLOAK_CACHE_TYPE: "local"
+  KEYCLOAK_LOG_OUTPUT: "default"
+  KC_LOG_LEVEL: "DEBUG"

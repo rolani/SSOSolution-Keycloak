@@ -1,0 +1,123 @@
+---
+# Source: keycloak/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: keycloak
+  namespace: "keycloak"
+  labels:
+    app.kubernetes.io/name: keycloak
+    helm.sh/chart: keycloak-14.2.0
+    app.kubernetes.io/instance: keycloak
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: keycloak
+spec:
+  replicas: 1
+  podManagementPolicy: Parallel
+  serviceName: keycloak-headless
+  updateStrategy:
+    rollingUpdate: {}
+    type: RollingUpdate
+  selector:
+    matchLabels: 
+      app.kubernetes.io/name: keycloak
+      app.kubernetes.io/instance: keycloak
+      app.kubernetes.io/component: keycloak
+  template:
+    metadata:
+      annotations:
+        checksum/configmap-env-vars: 6c0c6f9750aab2197c4d15978d1c106e39d62470147c9d34b22e820ad7aa2a42
+        checksum/secrets: 33b4d96fa493cc6c22d39ca29356f180c1dde5392adc5426361f362ed0f26cba
+      labels:
+        app.kubernetes.io/name: keycloak
+        helm.sh/chart: keycloak-14.2.0
+        app.kubernetes.io/instance: keycloak
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: keycloak
+    spec:
+      serviceAccountName: keycloak
+      
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: keycloak
+                    app.kubernetes.io/instance: keycloak
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+
+      securityContext:
+        fsGroup: 1001
+      enableServiceLinks: true
+      containers:
+        - name: keycloak
+          image: docker.io/bitnami/keycloak:20.0.3-debian-11-r5
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: BITNAMI_DEBUG
+              value: "false"
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak
+                  key: admin-password
+            - name: KEYCLOAK_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-postgresql
+                  key: password
+            - name: KEYCLOAK_HTTP_RELATIVE_PATH
+              value: "/"
+          envFrom:
+            - configMapRef:
+                name: keycloak-env-vars
+          resources:
+            limits: {}
+            requests: {}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: https
+              containerPort: 8443
+              protocol: TCP
+            - name: infinispan
+              containerPort: 7800
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 300
+            periodSeconds: 1
+            successThreshold: 1
+            timeoutSeconds: 5
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+            httpGet:
+              path: /realms/master
+              port: http
+          volumeMounts:
+            - name: certificates
+              mountPath: /opt/bitnami/keycloak/certs
+              readOnly: true
+      volumes:
+        - name: certificates
+          secret:
+            secretName: keycloak-prod-secret
+            defaultMode: 420
