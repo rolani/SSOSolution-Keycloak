@@ -16,9 +16,7 @@ data:
   KEYCLOAK_HTTP_PORT: "8080"
   KEYCLOAK_PROXY: "passthrough"
   KEYCLOAK_ENABLE_STATISTICS: "true"
-  #KEYCLOAK_DATABASE_HOST: "keycloak-postgresql"
-  #KEYCLOAK_DATABASE_HOST: "postgres-auth-database-backup.crzzluebxp1w.us-east-2.rds.amazonaws.com"
-  KEYCLOAK_DATABASE_HOST: "postgres-auth-database.ck6nockpempu.us-east-1.rds.amazonaws.com"
+  KEYCLOAK_DATABASE_HOST: "postgres-auth-database.com" #specify valid external postgresql db
   KEYCLOAK_DATABASE_PORT: "5432"
   KEYCLOAK_DATABASE_NAME: "keycloak"
   KEYCLOAK_DATABASE_USER: "keycloak"

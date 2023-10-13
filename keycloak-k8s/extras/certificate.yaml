@@ -10,6 +10,6 @@ spec:
     kind: ClusterIssuer
   duration: 4320h # 180d
   renewBefore: 720h # 30d
-  commonName: keycloak.ms6mnj5ah.com
+  commonName: keycloak.auth.com
   dnsNames:
-  - keycloak.ms6mnj5ah.com
+  - keycloak.auth.com
